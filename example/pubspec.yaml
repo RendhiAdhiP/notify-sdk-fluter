@@ -1,0 +1,15 @@
+name: notification_sdk_example
+description: Contoh implementasi Notification SDK Flutter
+publish_to: none
+
+environment:
+  sdk: ^3.2.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  notification_sdk:
+    path: ../
+
+flutter:
+  uses-material-design: true

@@ -13,7 +13,7 @@ Di `pubspec.yaml`:
 dependencies:
   notification_sdk:
     git:
-      url: https://github.com/your-org/notification_sdk_flutter.git
+      url: https://github.com//RendhiAdhiP/notify-sdk/
       ref: main
 ```
 
@@ -23,7 +23,7 @@ Atau via SSH:
 dependencies:
   notification_sdk:
     git:
-      url: git@github.com:your-org/notification_sdk_flutter.git
+      url: git@github.com:RendhiAdhiP/notify-sdk/
       ref: main
 ```
 

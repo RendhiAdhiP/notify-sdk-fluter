@@ -18,7 +18,7 @@ SDK Flutter/Dart untuk service notifikasi WebSocket — real-time notification c
 dependencies:
   notification_sdk:
     git:
-      url: https://github.com/your-org/notification_sdk_flutter.git
+      url: https://github.com/RendhiAdhiP/notify-sdk/
 ```
 
 Atau local:

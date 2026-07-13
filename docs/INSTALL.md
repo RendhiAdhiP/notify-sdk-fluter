@@ -13,7 +13,7 @@ Di `pubspec.yaml`:
 dependencies:
   notification_sdk:
     git:
-      url: https://github.com//RendhiAdhiP/notify-sdk/
+      url: https://github.com/RendhiAdhiP/notify-sdk/
       ref: main
 ```
 

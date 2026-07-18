@@ -11,9 +11,9 @@ Di `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  notification_sdk:
+  rws_sdk:
     git:
-      url: https://github.com//RendhiAdhiP/notify-sdk/
+      url: https://github.com/RendhiAdhiP/notification_sdk_flutter.git
       ref: main
 ```
 
@@ -21,9 +21,9 @@ Atau via SSH:
 
 ```yaml
 dependencies:
-  notification_sdk:
+  rws_sdk:
     git:
-      url: git@github.com:RendhiAdhiP/notify-sdk/
+      url: git@github.com:RendhiAdhiP/notification_sdk_flutter.git
       ref: main
 ```
 
@@ -33,8 +33,14 @@ Jika SDK berada di sibling directory:
 
 ```yaml
 dependencies:
-  notification_sdk:
+  rws_sdk:
     path: ../notification_sdk_flutter
+```
+
+## Import
+
+```dart
+import 'package:rws_sdk/rws_sdk.dart';
 ```
 
 ## Install Dependencies

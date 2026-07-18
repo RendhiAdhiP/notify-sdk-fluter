@@ -1,4 +1,4 @@
-class NotificationClientConfig {
+class RWSConfig {
   final String serverUrl;
   final String projectToken;
   final String origin;
@@ -7,7 +7,7 @@ class NotificationClientConfig {
   final int timeout;
   final Logger? logger;
 
-  const NotificationClientConfig({
+  const RWSConfig({
     required this.serverUrl,
     required this.projectToken,
     required this.origin,

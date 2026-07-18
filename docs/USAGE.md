@@ -3,8 +3,10 @@
 ## Inisialisasi Client
 
 ```dart
-final client = NotificationClient(
-  NotificationClientConfig(
+import 'package:rws_sdk/rws_sdk.dart';
+
+final client = RWSClient(
+  RWSConfig(
     serverUrl: 'https://notif.regarmarket.id',
     projectToken: 'eyJhbGciOiJIUzI1NiIs...',
     origin: 'regarmarket',
@@ -21,6 +23,18 @@ final client = NotificationClient(
 );
 ```
 
+### Opsi Konfigurasi
+
+| Parameter | Tipe | Default | Deskripsi |
+|---|---|---|---|
+| `serverUrl` | `String` | — | URL server WebSocket (wajib) |
+| `projectToken` | `String` | — | Token autentikasi project (wajib) |
+| `origin` | `String` | — | Origin platform (wajib) |
+| `autoConnect` | `bool` | `true` | Auto-connect saat inisialisasi |
+| `timeout` | `int` | `10000` | Timeout koneksi (ms) |
+| `reconnection` | `ReconnectionConfig` | `ReconnectionConfig()` | Auto-reconnect |
+| `logger` | `Logger?` | `null` | Custom logger |
+
 ## Event Listeners
 
 ```dart
@@ -29,13 +43,8 @@ final unsub = client.onNotification((notif) {
   print('[${notif.type}] ${notif.title}');
 });
 
-// Unsubscribe
+// Unsubscribe via returned callback
 unsub();
-
-// Atau pake method references
-void onNotif(NotificationPayload notif) => print(notif.title);
-client.onNotification(onNotif);
-// Tidak ada off() — gunakan callback yang dikembalikan
 ```
 
 ### Daftar Event
@@ -46,7 +55,7 @@ client.onNotification(onNotif);
 | `onDisconnect` | `void Function(String reason)` | Terputus |
 | `onReconnecting` | `void Function(int attempt)` | Reconnect |
 | `onError` | `void Function(dynamic error)` | Error |
-| `onNotification` | `void Function(NotificationPayload)` | Notif baru |
+| `onNotification` | `void Function(RWSPayload)` | Notif baru |
 
 ## Channel Management
 
@@ -117,6 +126,17 @@ await client.disconnect();
 
 // Destroy (cleanup semua listener)
 await client.destroy();
+```
+
+## Update Credentials
+
+```dart
+client.setProjectToken('new-token');
+client.setOrigin('new-origin');
+
+// Untuk menggunakan kredensial baru, disconnect lalu connect ulang
+await client.disconnect();
+await client.connect();
 ```
 
 ## Error Handling

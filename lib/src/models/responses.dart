@@ -16,7 +16,7 @@ class GetNotificationsResponse {
   factory GetNotificationsResponse.fromJson(Map<String, dynamic> json) {
     return GetNotificationsResponse(
       total: json['total'] as int,
-      totalIsRead: json['total_isread'] as int,
+      totalIsRead: json['total_is_read'] as int,
       totalUnread: json['total_unread'] as int,
       data: (json['data'] as List<dynamic>)
           .map((e) => ChannelGroup.fromJson(e as Map<String, dynamic>))
@@ -44,7 +44,7 @@ class ChannelGroup {
     return ChannelGroup(
       channel: json['channel'] as String,
       total: json['total'] as int,
-      totalIsRead: json['total_isread'] as int,
+      totalIsRead: json['total_is_read'] as int,
       totalUnread: json['total_unread'] as int,
       data: (json['data'] as List<dynamic>)
           .map((e) => DateGroup.fromJson(e as Map<String, dynamic>))
@@ -55,7 +55,7 @@ class ChannelGroup {
 
 class DateGroup {
   final String label;
-  final List<NotificationPayload> notifications;
+  final List<RWSPayload> notifications;
 
   const DateGroup({
     required this.label,
@@ -67,7 +67,7 @@ class DateGroup {
       label: json['label'] as String,
       notifications: (json['notif'] as List<dynamic>)
           .map((e) =>
-              NotificationPayload.fromJson(e as Map<String, dynamic>))
+              RWSPayload.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }

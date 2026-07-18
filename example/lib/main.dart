@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notification_sdk/notification_sdk.dart';
+import 'package:rws_sdk/rws_sdk.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,9 +29,9 @@ class NotificationDemo extends StatefulWidget {
 }
 
 class _NotificationDemoState extends State<NotificationDemo> {
-  late final NotificationClient _client;
+  late final RWSClient _client;
   ConnectionState _connectionState = ConnectionState.disconnected;
-  List<NotificationPayload> _notifications = [];
+  List<RWSPayload> _notifications = [];
   int _unreadCount = 0;
   bool _isLoading = false;
 
@@ -39,8 +39,8 @@ class _NotificationDemoState extends State<NotificationDemo> {
   void initState() {
     super.initState();
 
-    _client = NotificationClient(
-      NotificationClientConfig(
+    _client = RWSClient(
+      RWSConfig(
         serverUrl: const String.fromEnvironment('NOTIF_SERVER_URL',
             defaultValue: 'https://notif.regarmarket.id'),
         projectToken: const String.fromEnvironment('NOTIF_PROJECT_TOKEN',
@@ -107,12 +107,12 @@ class _NotificationDemoState extends State<NotificationDemo> {
     }
   }
 
-  Future<void> _markAsRead(NotificationPayload notif) async {
+  Future<void> _markAsRead(RWSPayload notif) async {
     await _client.markAsRead(notif.id, 'user123');
     setState(() {
       final idx = _notifications.indexWhere((n) => n.id == notif.id);
       if (idx != -1) {
-        _notifications[idx] = NotificationPayload(
+        _notifications[idx] = RWSPayload(
           id: _notifications[idx].id,
           ownerId: _notifications[idx].ownerId,
           room: _notifications[idx].room,

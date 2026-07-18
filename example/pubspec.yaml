@@ -1,5 +1,5 @@
-name: notification_sdk_example
-description: Contoh implementasi Notification SDK Flutter
+name: rws_sdk_example
+description: Contoh implementasi RWS SDK Flutter (rws_sdk)
 publish_to: none
 
 environment:
@@ -8,7 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  notification_sdk:
+  rws_sdk:
     path: ../
 
 flutter:

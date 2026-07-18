@@ -1,11 +1,13 @@
 # API Reference — Flutter SDK
 
-## NotificationClient
+## RWSClient
+
+Package: `rws_sdk` | Import: `package:rws_sdk/rws_sdk.dart`
 
 ### Constructor
 
 ```dart
-NotificationClient(NotificationClientConfig config)
+RWSClient(RWSConfig config)
 ```
 
 ### Properties
@@ -19,16 +21,16 @@ NotificationClient(NotificationClientConfig config)
 ### Methods
 
 #### `Future<void> connect()`
-Membuka koneksi WebSocket.
+Membuka koneksi WebSocket. Otomatis dipanggil jika `autoConnect: true`.
 
 #### `Future<void> disconnect()`
-Menutup koneksi.
+Menutup koneksi dan menghapus semua room.
 
 #### `Future<void> destroy()`
-Menutup koneksi + hapus semua listener.
+Menutup koneksi + hapus semua event listener.
 
 #### `void join(String destination, String channel, [String? userUniqueCode])`
-Subscribe ke channel.
+Subscribe ke channel. Format room: `destination:channel[:userUniqueCode]`.
 
 #### `void leave(String destination, String channel, [String? userUniqueCode])`
 Unsubscribe dari channel.
@@ -36,13 +38,17 @@ Unsubscribe dari channel.
 #### `void leaveAll()`
 Unsubscribe dari semua channel.
 
-#### `void Function() onConnect(void Function() listener)`
-#### `void Function() onDisconnect(void Function(String reason) listener)`
-#### `void Function() onReconnecting(void Function(int attempt) listener)`
-#### `void Function() onError(void Function(dynamic error) listener)`
-#### `void Function() onNotification(void Function(NotificationPayload) listener)`
+#### Listener Methods
 
-Semua method listener mengembalikan fungsi callback untuk unsubscribe.
+Semua listener method mengembalikan `VoidCallback` untuk unsubscribe.
+
+```dart
+VoidCallback onConnect(void Function() listener)
+VoidCallback onDisconnect(void Function(String reason) listener)
+VoidCallback onReconnecting(void Function(int attempt) listener)
+VoidCallback onError(void Function(dynamic error) listener)
+VoidCallback onNotification(void Function(RWSPayload) listener)
+```
 
 #### `Future<GetNotificationsResponse> getNotifications(List<String> channels, String userUniqueCode)`
 Fetch notifikasi via WebSocket.
@@ -56,10 +62,10 @@ Fetch notifikasi via WebSocket.
 
 ## Models
 
-### NotificationClientConfig
+### RWSConfig
 
 ```dart
-NotificationClientConfig({
+RWSConfig({
   required String serverUrl,
   required String projectToken,
   required String origin,
@@ -82,22 +88,32 @@ ReconnectionConfig({
 })
 ```
 
-### NotificationPayload
+### RWSPayload
 
 ```dart
-class NotificationPayload {
-  final String id;           // _id dari MongoDB
+class RWSPayload {
+  final String id;             // _id dari MongoDB
   final String ownerId;
-  final String room;         // "public" | "private"
+  final String room;           // "public" | "private"
   final String title;
   final String message;
   final String link;
   final String? userUniqueCode;
   final String? type;
-  final NotificationMeta meta;
+  final RWSNotificationMeta meta;
   final bool isRead;
   final String createdAt;
   final String updatedAt;
+}
+```
+
+### RWSNotificationMeta
+
+```dart
+class RWSNotificationMeta {
+  final String destination;
+  final String channel;
+  final String? origin;
 }
 ```
 
@@ -120,8 +136,8 @@ class ChannelGroup {
 }
 
 class DateGroup {
-  final String label; // "Hari Ini", "Kemarin", dll
-  final List<NotificationPayload> notifications;
+  final String label;           // "Hari Ini", "Kemarin", dll
+  final List<RWSPayload> notifications;
 }
 ```
 

@@ -11,18 +11,18 @@ import 'handlers/event_handler.dart';
 import 'utils/logger.dart';
 import 'utils/helpers.dart';
 
-class NotificationClient {
+class RWSClient {
   io.Socket? _socket;
-  final NotificationClientConfig _config;
+  final RWSConfig _config;
   final AuthManager _authManager;
   final ReconnectionManager _reconnectionManager;
   final EventHandler _eventHandler;
-  final NotificationLogger _logger;
+  final RWSLogger _logger;
   ConnectionState _state = ConnectionState.disconnected;
   final _joinedRooms = <String>{};
   bool _destroyed = false;
 
-  NotificationClient(NotificationClientConfig config)
+  RWSClient(RWSConfig config)
       : _config = config,
         _authManager = AuthManager(
           projectToken: config.projectToken,
@@ -32,7 +32,7 @@ class NotificationClient {
           config: config.reconnection,
         ),
         _eventHandler = EventHandler(),
-        _logger = NotificationLogger(config.logger ?? Logger.silent) {
+        _logger = RWSLogger(config.logger ?? Logger.silent) {
     _reconnectionManager.onAttempt = (attempt, delay) {
       _logger.info('Reconnection attempt $attempt in ${delay}ms');
       _eventHandler.emitReconnecting(attempt);
@@ -104,14 +104,13 @@ class NotificationClient {
         }
       });
 
-      _socket!.on('get-notif', (data) {
+      _socket!.on('notification:new', (data) {
         if (data is Map<String, dynamic>) {
-          final notif = NotificationPayload.fromJson(data);
+          final notif = RWSPayload.fromJson(data);
           _eventHandler.emitNotification(notif);
         }
       });
 
-      // Timeout
       Timer(_config.timeout >= Duration.millisecondsPerSecond
           ? Duration(milliseconds: _config.timeout)
           : const Duration(seconds: 10), () {
@@ -150,7 +149,7 @@ class NotificationClient {
     if (_joinedRooms.isEmpty) return;
     _logger.info('Rejoining ${_joinedRooms.length} room(s)');
     for (final room in _joinedRooms) {
-      _socket?.emit('join-room', [room]);
+      _socket?.emit('room:join', [room]);
     }
   }
 
@@ -185,7 +184,7 @@ class NotificationClient {
 
     if (_socket?.connected == true) {
       _logger.info('Joining rooms: $rooms');
-      _socket!.emit('join-room', rooms);
+      _socket!.emit('room:join', rooms);
     } else {
       _logger.warn('Socket not connected, rooms will be joined on connect');
     }
@@ -204,14 +203,14 @@ class NotificationClient {
 
     if (_socket?.connected == true) {
       _logger.info('Leaving rooms: $rooms');
-      _socket!.emit('leave-room', rooms);
+      _socket!.emit('room:leave', rooms);
     }
   }
 
   void leaveAll() {
     for (final room in _joinedRooms) {
       if (_socket?.connected == true) {
-        _socket!.emit('leave-room', [room]);
+        _socket!.emit('room:leave', [room]);
       }
     }
     _joinedRooms.clear();
@@ -248,7 +247,7 @@ class NotificationClient {
     }
 
     void listener(dynamic response) {
-      _socket?.off('get-all-notif', listenerA: listener);
+      _socket?.off('notification:list', listenerA: listener);
       if (response is Map<String, dynamic>) {
         completer.complete(GetNotificationsResponse.fromJson(response));
       } else {
@@ -258,9 +257,9 @@ class NotificationClient {
       }
     }
 
-    _socket!.on('get-all-notif', listener);
+    _socket!.on('notification:list', listener);
 
-    _socket!.emit('get-all-notif', [
+    _socket!.emit('notification:list', [
       {
         'channels': channels,
         'origin': _authManager.origin,
@@ -271,7 +270,7 @@ class NotificationClient {
     ]);
 
     Timer(const Duration(seconds: 10), () {
-      _socket?.off('get-all-notif', listenerA: listener);
+      _socket?.off('notification:list', listenerA: listener);
       if (!completer.isCompleted) {
         completer.completeError(Exception('getNotifications timeout'));
       }

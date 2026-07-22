@@ -1,7 +1,7 @@
 import '../models/notification.dart';
 
 typedef VoidCallback = void Function();
-typedef NotificationCallback = void Function(NotificationPayload notification);
+typedef NotificationCallback = void Function(RWSPayload notification);
 typedef ErrorCallback = void Function(dynamic error);
 typedef DisconnectCallback = void Function(String reason);
 typedef ReconnectCallback = void Function(int attempt);
@@ -24,13 +24,17 @@ class EventHandler {
       try {
         Function.apply(listener, args);
       } catch (err) {
-        print('[NotificationSDK] Error in $event listener: $err');
+        print('[RWSSDK] Error in $event listener: $err');
       }
     });
   }
 
   void removeAll() {
     _listeners.clear();
+  }
+
+  int listenerCount(String event) {
+    return _listeners[event]?.length ?? 0;
   }
 
   // --- typed API ---
@@ -66,6 +70,6 @@ class EventHandler {
   void emitDisconnect(String reason) => _emit('disconnect', [reason]);
   void emitReconnecting(int attempt) => _emit('reconnecting', [attempt]);
   void emitError(dynamic error) => _emit('error', [error]);
-  void emitNotification(NotificationPayload notification) =>
+  void emitNotification(RWSPayload notification) =>
       _emit('notification', [notification]);
 }

@@ -6,6 +6,9 @@ String generatePrivateRoom() {
   return 'sdk-$now-$random';
 }
 
+Future<void> sleep(Duration duration) =>
+    Future.delayed(duration);
+
 String buildRoomName(
   String destination,
   String channel, [

@@ -2,7 +2,7 @@
 
 ## Prasyarat
 
-- Flutter >= 3.16 / Dart SDK >= 3.2
+- Flutter >= 3.16 / Dart >= 3.2
 - Project Flutter sudah diinisialisasi
 
 ## Install dari Git (Private Repository)
@@ -11,9 +11,9 @@ Di `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  notification_sdk:
+  rws:
     git:
-      url: https://github.com/RendhiAdhiP/notify-sdk/
+      url: https://github.com/RendhiAdhiP/rws-dart.git
       ref: main
 ```
 
@@ -21,26 +21,32 @@ Atau via SSH:
 
 ```yaml
 dependencies:
-  notification_sdk:
+  rws:
     git:
-      url: git@github.com:RendhiAdhiP/notify-sdk/
+      url: git@github.com:RendhiAdhiP/rws-dart.git
       ref: main
 ```
 
 ## Install dari Local Path (Development)
 
-Jika SDK berada di sibling directory:
+Jika Package berada di sibling directory:
 
 ```yaml
 dependencies:
-  notification_sdk:
-    path: ../notification_sdk_flutter
+  rws:
+    path: ../rws-dart
+```
+
+## Import
+
+```dart
+import 'package:rws/rws.dart';
 ```
 
 ## Install Dependencies
 
 ```bash
-cd notification_sdk_flutter
+cd rws-dart
 dart pub get
 ```
 

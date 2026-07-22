@@ -1,41 +1,45 @@
-# Notification SDK — Flutter
+# RWS Package — Flutter
 
-SDK Flutter/Dart untuk service notifikasi WebSocket — real-time notification client untuk platform multi-tenant.
+**RWS Package** versi Flutter/Dart — Realtime WebSocket client untuk notifikasi, chat, dan event realtime multi-tenant.
+
+Package: `rws` | Import: `package:rws/rws.dart` | Class: `RWSClient`
 
 ## Fitur
 
--   Koneksi WebSocket (Socket.io) dengan autentikasi otomatis
+-   Koneksi WebSocket (Socket.io) dengan autentikasi otomatis (`project_token` + `origin`)
 -   Subscribe / Unsubscribe ke channel notifikasi
 -   Menerima notifikasi real-time via event listener
 -   Fetch semua notifikasi (publik & private)
 -   Mark as read, mark all as read, mark as delete
 -   Auto-reconnect dengan exponential backoff
 -   Type-safe — semua model dart:class
+-   API konsisten dengan version TypeScript SDK
 
 ## Instalasi
 
 ```yaml
 dependencies:
-  notification_sdk:
+  rws:
     git:
-      url: https://github.com/RendhiAdhiP/notify-sdk/
+      url: https://github.com/RendhiAdhiP/rws-dart.git
+      ref: main
 ```
 
 Atau local:
 
 ```yaml
 dependencies:
-  notification_sdk:
-    path: ../notification_sdk_flutter
+  rws:
+    path: ../rws-dart
 ```
 
 ## Quick Start
 
 ```dart
-import 'package:notification_sdk/notification_sdk.dart';
+import 'package:rws/rws.dart';
 
-final client = NotificationClient(
-  NotificationClientConfig(
+final client = RWSClient(
+  RWSConfig(
     serverUrl: 'https://notif.regarmarket.id',
     projectToken: 'your-project-token',
     origin: 'regarmarket',
@@ -57,7 +61,3 @@ final result = await client.getNotifications(['orders', 'system'], 'user123');
 - [docs/USAGE.md](docs/USAGE.md) — Panduan penggunaan lengkap
 - [docs/API.md](docs/API.md) — API Reference
 - [docs/CHANGELOG.md](docs/CHANGELOG.md) — Riwayat perubahan
-
-## API Mirip dengan Version TypeScript
-
-SDK ini memiliki API yang konsisten dengan version TypeScript (Next.js) sehingga developer dapat berpindah platform dengan mudah.

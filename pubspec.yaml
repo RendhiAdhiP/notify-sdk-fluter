@@ -1,6 +1,6 @@
-name: notification_sdk
-description: SDK untuk service notifikasi WebSocket — real-time notification client untuk platform multi-tenant. Versi Flutter/Dart.
-version: 1.0.0
+name: rws
+description: RWS SDK — Realtime WebSocket client untuk notifikasi, chat, dan event realtime multi-tenant. Versi Flutter/Dart.
+version: 2.0.0
 publish_to: none
 
 environment:

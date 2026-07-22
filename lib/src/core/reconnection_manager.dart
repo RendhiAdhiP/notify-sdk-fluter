@@ -34,6 +34,8 @@ class ReconnectionManager {
     return min(calculated, maxDelay) + Random().nextInt(1000);
   }
 
+  ReconnectionConfig getConfig() => config;
+
   bool schedule(VoidCallback callback) {
     if (!enabled) return false;
     if (_attempt >= maxAttempts) return false;

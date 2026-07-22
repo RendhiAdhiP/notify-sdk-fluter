@@ -1,12 +1,12 @@
 import '../models/config.dart';
 
-class NotificationLogger {
+class RWSLogger {
   final Logger _logger;
 
-  const NotificationLogger(this._logger);
+  const RWSLogger(this._logger);
 
-  void info(String message) => _logger.info('[NotificationSDK] $message');
-  void warn(String message) => _logger.warn('[NotificationSDK] $message');
-  void error(String message) => _logger.error('[NotificationSDK] $message');
-  void debug(String message) => _logger.debug('[NotificationSDK] $message');
+  void info(String message) => _logger.info('[RWSSDK] $message');
+  void warn(String message) => _logger.warn('[RWSSDK] $message');
+  void error(String message) => _logger.error('[RWSSDK] $message');
+  void debug(String message) => _logger.debug('[RWSSDK] $message');
 }

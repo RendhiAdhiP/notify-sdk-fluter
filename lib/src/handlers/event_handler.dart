@@ -33,6 +33,10 @@ class EventHandler {
     _listeners.clear();
   }
 
+  int listenerCount(String event) {
+    return _listeners[event]?.length ?? 0;
+  }
+
   // --- typed API ---
 
   VoidCallback onConnect(VoidCallback listener) {

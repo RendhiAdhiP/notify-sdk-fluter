@@ -21,6 +21,7 @@ class RWSClient {
   ConnectionState _state = ConnectionState.disconnected;
   final _joinedRooms = <String>{};
   bool _destroyed = false;
+  Future<void>? _connectPromise;
 
   RWSClient(RWSConfig config)
       : _config = config,
@@ -53,19 +54,27 @@ class RWSClient {
 
   Future<void> connect() async {
     if (_socket?.connected == true) {
-      _logger.warn('Already connected');
-      return;
-    }
-    if (_state == ConnectionState.connecting) {
-      _logger.warn('Connection already in progress');
       return;
     }
 
+    if (_connectPromise != null) {
+      return _connectPromise;
+    }
+
     _destroyed = false;
+
+    if (_socket != null) {
+      _cleanupSocket();
+    }
+
     _setState(ConnectionState.connecting);
     _logger.info('Connecting to ${_config.serverUrl}');
 
     final completer = Completer<void>();
+    final connectFuture = completer.future;
+    _connectPromise = connectFuture;
+    final timeoutMs = _config.timeout;
+    Timer? timeoutTimer;
 
     try {
       _socket = io.io(
@@ -77,7 +86,20 @@ class RWSClient {
             .build(),
       );
 
+      timeoutTimer = Timer(Duration(milliseconds: timeoutMs), () {
+        _connectPromise = null;
+        _cleanupSocket();
+        _setState(ConnectionState.disconnected);
+        if (!completer.isCompleted) {
+          completer.completeError(
+            Exception('Connection timeout after ${timeoutMs}ms'),
+          );
+        }
+      });
+
       _socket!.onConnect((_) {
+        timeoutTimer?.cancel();
+        _connectPromise = null;
         _setState(ConnectionState.connected);
         _reconnectionManager.reset();
         _logger.info('Connected');
@@ -87,6 +109,7 @@ class RWSClient {
       });
 
       _socket!.onDisconnect((reason) {
+        _connectPromise = null;
         _setState(ConnectionState.disconnected);
         _logger.info('Disconnected: $reason');
         _eventHandler.emitDisconnect(reason ?? 'unknown');
@@ -97,6 +120,7 @@ class RWSClient {
       });
 
       _socket!.onConnectError((data) {
+        timeoutTimer?.cancel();
         _logger.error('Connection error: $data');
         _eventHandler.emitError(data);
         if (!completer.isCompleted) {
@@ -110,37 +134,34 @@ class RWSClient {
           _eventHandler.emitNotification(notif);
         }
       });
-
-      Timer(_config.timeout >= Duration.millisecondsPerSecond
-          ? Duration(milliseconds: _config.timeout)
-          : const Duration(seconds: 10), () {
-        if (!completer.isCompleted) {
-          _socket?.disconnect();
-          _setState(ConnectionState.disconnected);
-          completer.completeError(
-            Exception('Connection timeout after ${_config.timeout}ms'),
-          );
-        }
-      });
     } catch (err) {
+      _connectPromise = null;
+      timeoutTimer?.cancel();
+      _cleanupSocket();
       _setState(ConnectionState.disconnected);
       _logger.error('Failed to create socket: $err');
       if (!completer.isCompleted) completer.completeError(err);
     }
 
-    return completer.future;
+    return connectFuture;
+  }
+
+  void _cleanupSocket() {
+    if (_socket != null) {
+      _socket!.clearListeners();
+      _socket!.disconnect();
+      _socket = null;
+    }
   }
 
   void _handleReconnect() {
+    _connectPromise = null;
     _reconnectionManager.schedule(() {
       if (_destroyed) return;
       _logger.info('Attempting reconnection...');
       connect().catchError((err) {
         _logger.error('Reconnection failed: $err');
         _eventHandler.emitError(err);
-        if (!_destroyed) {
-          _handleReconnect();
-        }
       });
     });
   }
@@ -149,19 +170,16 @@ class RWSClient {
     if (_joinedRooms.isEmpty) return;
     _logger.info('Rejoining ${_joinedRooms.length} room(s)');
     for (final room in _joinedRooms) {
-      _socket?.emit('room:join', [room]);
+      _socket?.emit('room:join', room);
     }
   }
 
   Future<void> disconnect() async {
     _destroyed = true;
+    _connectPromise = null;
     _reconnectionManager.cancel();
     _joinedRooms.clear();
-
-    _socket?.clearListeners();
-    _socket?.disconnect();
-    _socket = null;
-
+    _cleanupSocket();
     _setState(ConnectionState.disconnected);
     _logger.info('Disconnected');
   }
@@ -180,13 +198,10 @@ class RWSClient {
 
     for (final room in rooms) {
       _joinedRooms.add(room);
-    }
 
-    if (_socket?.connected == true) {
-      _logger.info('Joining rooms: $rooms');
-      _socket!.emit('room:join', rooms);
-    } else {
-      _logger.warn('Socket not connected, rooms will be joined on connect');
+      if (_socket?.connected == true) {
+        _socket!.emit('room:join', room);
+      }
     }
   }
 
@@ -199,18 +214,17 @@ class RWSClient {
 
     for (final room in rooms) {
       _joinedRooms.remove(room);
-    }
 
-    if (_socket?.connected == true) {
-      _logger.info('Leaving rooms: $rooms');
-      _socket!.emit('room:leave', rooms);
+      if (_socket?.connected == true) {
+        _socket!.emit('room:leave', room);
+      }
     }
   }
 
   void leaveAll() {
     for (final room in _joinedRooms) {
       if (_socket?.connected == true) {
-        _socket!.emit('room:leave', [room]);
+        _socket!.emit('room:leave', room);
       }
     }
     _joinedRooms.clear();
@@ -246,31 +260,52 @@ class RWSClient {
       return completer.future;
     }
 
+    var settled = false;
+
+    void Function(dynamic) cleanup = (_) {};
+
+    void done() {
+      if (settled) return;
+      settled = true;
+      cleanup(null);
+    }
+
     void listener(dynamic response) {
-      _socket?.off('notification:list', listenerA: listener);
+      done();
       if (response is Map<String, dynamic>) {
         completer.complete(GetNotificationsResponse.fromJson(response));
       } else {
+        completer.completeError(Exception('Invalid response format'));
+      }
+    }
+
+    void onDisconnect(dynamic reason) {
+      done();
+      if (!completer.isCompleted) {
         completer.completeError(
-          Exception('Invalid response format'),
+          Exception('Socket disconnected while fetching notifications'),
         );
       }
     }
 
-    _socket!.on('notification:list', listener);
-
-    _socket!.emit('notification:list', [
-      {
-        'channels': channels,
-        'origin': _authManager.origin,
-        'user_unique_code': userUniqueCode,
-        'private': '${_authManager.origin}:all:$userUniqueCode',
-        'public': '${_authManager.origin}:all',
-      }
-    ]);
-
-    Timer(const Duration(seconds: 10), () {
+    cleanup = (dynamic _) {
       _socket?.off('notification:list', listenerA: listener);
+      _socket?.off('disconnect', listenerA: onDisconnect);
+    };
+
+    _socket!.on('notification:list', listener);
+    _socket!.on('disconnect', onDisconnect);
+
+    _socket!.emit('notification:list', {
+      'channels': channels,
+      'origin': _authManager.origin,
+      'user_unique_code': userUniqueCode,
+      'private': '${_authManager.origin}:all:$userUniqueCode',
+      'public': '${_authManager.origin}:all',
+    });
+
+    Timer(Duration(milliseconds: _config.timeout), () {
+      done();
       if (!completer.isCompleted) {
         completer.completeError(Exception('getNotifications timeout'));
       }

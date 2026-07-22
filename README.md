@@ -1,6 +1,6 @@
-# RWS SDK — Flutter
+# RWS Package — Flutter
 
-**RWS SDK** versi Flutter/Dart — Realtime WebSocket client untuk notifikasi, chat, dan event realtime multi-tenant.
+**RWS Package** versi Flutter/Dart — Realtime WebSocket client untuk notifikasi, chat, dan event realtime multi-tenant.
 
 Package: `rws` | Import: `package:rws/rws.dart` | Class: `RWSClient`
 

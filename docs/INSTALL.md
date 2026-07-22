@@ -2,7 +2,7 @@
 
 ## Prasyarat
 
-- Flutter >= 3.16 / Dart SDK >= 3.2
+- Flutter >= 3.16 / Dart >= 3.2
 - Project Flutter sudah diinisialisasi
 
 ## Install dari Git (Private Repository)
@@ -29,7 +29,7 @@ dependencies:
 
 ## Install dari Local Path (Development)
 
-Jika SDK berada di sibling directory:
+Jika Package berada di sibling directory:
 
 ```yaml
 dependencies:

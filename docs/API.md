@@ -2,7 +2,7 @@
 
 ## RWSClient
 
-Package: `rws_sdk` | Import: `package:rws_sdk/rws_sdk.dart`
+Package: `rws` | Import: `package:rws/rws.dart`
 
 ### Constructor
 

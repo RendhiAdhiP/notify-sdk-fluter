@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rws_sdk/rws_sdk.dart';
+import 'package:rws/rws.dart';
 
 void main() {
   runApp(const MyApp());

@@ -3,7 +3,7 @@
 ## Inisialisasi Client
 
 ```dart
-import 'package:rws_sdk/rws_sdk.dart';
+import 'package:rws/rws.dart';
 
 final client = RWSClient(
   RWSConfig(

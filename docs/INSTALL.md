@@ -11,7 +11,7 @@ Di `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  rws_sdk:
+  rws:
     git:
       url: https://github.com/RendhiAdhiP/rws-dart.git
       ref: main
@@ -21,7 +21,7 @@ Atau via SSH:
 
 ```yaml
 dependencies:
-  rws_sdk:
+  rws:
     git:
       url: git@github.com:RendhiAdhiP/rws-dart.git
       ref: main
@@ -33,14 +33,14 @@ Jika SDK berada di sibling directory:
 
 ```yaml
 dependencies:
-  rws_sdk:
+  rws:
     path: ../rws-dart
 ```
 
 ## Import
 
 ```dart
-import 'package:rws_sdk/rws_sdk.dart';
+import 'package:rws/rws.dart';
 ```
 
 ## Install Dependencies

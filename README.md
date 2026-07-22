@@ -2,7 +2,7 @@
 
 **RWS SDK** versi Flutter/Dart — Realtime WebSocket client untuk notifikasi, chat, dan event realtime multi-tenant.
 
-Package: `rws_sdk` | Import: `package:rws_sdk/rws_sdk.dart` | Class: `RWSClient`
+Package: `rws` | Import: `package:rws/rws.dart` | Class: `RWSClient`
 
 ## Fitur
 
@@ -19,7 +19,7 @@ Package: `rws_sdk` | Import: `package:rws_sdk/rws_sdk.dart` | Class: `RWSClient`
 
 ```yaml
 dependencies:
-  rws_sdk:
+  rws:
     git:
       url: https://github.com/RendhiAdhiP/rws-dart.git
       ref: main
@@ -29,14 +29,14 @@ Atau local:
 
 ```yaml
 dependencies:
-  rws_sdk:
+  rws:
     path: ../rws-dart
 ```
 
 ## Quick Start
 
 ```dart
-import 'package:rws_sdk/rws_sdk.dart';
+import 'package:rws/rws.dart';
 
 final client = RWSClient(
   RWSConfig(

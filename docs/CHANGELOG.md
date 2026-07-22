@@ -3,7 +3,7 @@
 ## [2.0.0] - 2026-07-18
 
 ### Changed
--   **Package renamed**: `notification_sdk` → `rws_sdk` (import `package:rws_sdk/rws_sdk.dart`)
+-   **Package renamed**: `notification_sdk` → `rws` (import `package:rws/rws.dart`)
 -   **Class renamed**: `NotificationClient` → `RWSClient`
 -   **Config renamed**: `NotificationClientConfig` → `RWSConfig`
 -   **Models renamed**: `NotificationPayload` → `RWSPayload`, `NotificationMeta` → `RWSNotificationMeta`

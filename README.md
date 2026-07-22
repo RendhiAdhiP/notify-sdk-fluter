@@ -21,7 +21,7 @@ Package: `rws_sdk` | Import: `package:rws_sdk/rws_sdk.dart` | Class: `RWSClient`
 dependencies:
   rws_sdk:
     git:
-      url: https://github.com/RendhiAdhiP/notification_sdk_flutter.git
+      url: https://github.com/RendhiAdhiP/rws-dart.git
       ref: main
 ```
 
@@ -30,7 +30,7 @@ Atau local:
 ```yaml
 dependencies:
   rws_sdk:
-    path: ../notification_sdk_flutter
+    path: ../rws-dart
 ```
 
 ## Quick Start

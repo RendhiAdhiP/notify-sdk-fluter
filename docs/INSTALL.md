@@ -13,7 +13,7 @@ Di `pubspec.yaml`:
 dependencies:
   rws_sdk:
     git:
-      url: https://github.com/RendhiAdhiP/notification_sdk_flutter.git
+      url: https://github.com/RendhiAdhiP/rws-dart.git
       ref: main
 ```
 
@@ -23,7 +23,7 @@ Atau via SSH:
 dependencies:
   rws_sdk:
     git:
-      url: git@github.com:RendhiAdhiP/notification_sdk_flutter.git
+      url: git@github.com:RendhiAdhiP/rws-dart.git
       ref: main
 ```
 
@@ -34,7 +34,7 @@ Jika SDK berada di sibling directory:
 ```yaml
 dependencies:
   rws_sdk:
-    path: ../notification_sdk_flutter
+    path: ../rws-dart
 ```
 
 ## Import
@@ -46,7 +46,7 @@ import 'package:rws_sdk/rws_sdk.dart';
 ## Install Dependencies
 
 ```bash
-cd notification_sdk_flutter
+cd rws-dart
 dart pub get
 ```
 
